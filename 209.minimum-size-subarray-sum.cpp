@@ -83,19 +83,20 @@ using namespace std;
 class Solution {
 public:
     int minSubArrayLen(int target, vector<int>& nums) {
-        int cur_sum = 0;
-        int left = 0;
-        int res = INT_MAX;
-        for (int right = 0; right < nums.size(); right++) {
+        int right = 0, left = 0, n = nums.size(), res = n + 1, cur_sum = 0;
+        
+        while (right < n) {
             cur_sum += nums[right];
-
-            while (cur_sum >= target) {
-                res = min(res, right - left + 1);
+            right++;
+            while (cur_sum - nums[left] >= target) {
                 cur_sum -= nums[left];
                 left++;
             }
+            if (cur_sum >= target) {
+                res = min(res, right - left);
+            }
         }
-        return res > nums.size() ? 0 : res;
+        return res <= n ? res : 0;
     }
 };
 // @lc code=end

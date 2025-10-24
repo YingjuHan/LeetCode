@@ -68,20 +68,22 @@ public:
         if (k <= 1) {
             return 0;
         }
-        int res = 0;
-        int prod = 1;
-        int left = 0;
 
-        for (int right = 0; right < nums.size(); right++) {
-            prod *= nums[right];
+        int res = 0, left = 0, right = 0;
+        int prod = 1;
+
+        while (right < nums.size()) {
+            int in_win = nums[right];
+            prod *= in_win;
+            right++;
 
             while (prod >= k) {
                 prod /= nums[left];
                 left++;
             }
-            res += right - left + 1;
-        }
 
+            res += right - left;
+        }
         return res;
     }
 };

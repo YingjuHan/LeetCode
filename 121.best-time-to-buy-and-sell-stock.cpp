@@ -72,10 +72,10 @@ class Solution {
 public:
     int maxProfit(vector<int>& prices) {
         int res = 0;
-        int min_prices = prices[0];
-        for (int p : prices) {
-            res = max(res, p - min_prices);
-            min_prices = min(min_prices, p);
+        int cost = INT_MAX;
+        for (int price : prices) {
+            cost = min(cost, price);
+            res = max(res, price - cost);
         }
         return res;
     }

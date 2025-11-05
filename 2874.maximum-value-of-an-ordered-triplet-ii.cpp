@@ -83,16 +83,11 @@ public:
     long long maximumTripletValue(vector<int>& nums) {
         long long res = 0;
         int n = nums.size();
-        vector<int> suf_max(n + 1);
-        for (int k = n - 1; k > 1; k--) {
-            suf_max[k] = max(suf_max[k + 1], nums[k]); // 后缀最大值为当前数字和后面数字的最大值
-        }
-
-        int pre_max = nums[0];
-
-        for (int j = 1; j < n - 1; j++) {
-            res = max(res, 1LL * (pre_max - nums[j]) * suf_max[j + 1]);
-            pre_max = max(pre_max, nums[j]);
+        int max_diff = 0, pre_max = 0;
+        for (int x : nums) {
+            res = max(res, 1LL * max_diff * x);
+            max_diff = max(max_diff, pre_max - x);
+            pre_max = max(pre_max, x);
         }
         return res;
     }

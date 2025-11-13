@@ -68,7 +68,11 @@ using namespace std;
 // @lc code=start
 class Solution {
 public:
-    int numSubarraysWithSum(vector<int>& nums, int goal) {
+    int numSubarraysWithSum(vector<int>& nums, int goal)
+    /*
+    {
+        
+        // 滑动窗口
         int res = 0, left_1 = 0, left_2 = 0, right = 0;
         int temp_sum_1 = 0, temp_sum_2 = 0;
         
@@ -89,6 +93,21 @@ public:
             }
 
             res += left_1 - left_2;
+        }
+        return res;
+        */
+    {
+        int n = nums.size();
+        vector<int> preSum(n + 1, 0);
+        for (int i = 0; i < n; i++) {
+            preSum[i + 1] = preSum[i] + nums[i];
+        }
+        unordered_map<int, int> cnt;
+        cnt[0] = 1;
+        int res = 0;
+        for (int i = 1; i <= n; i++) {
+            res += cnt[preSum[i] - goal];
+            cnt[preSum[i]]++;
         }
         return res;
     }

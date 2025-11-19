@@ -94,25 +94,27 @@ class Solution {
 public:
     int minSumOfLengths(vector<int>& arr, int target) {
         int n = arr.size();
-        unordered_map<long long, int> idx;
-        vector<long long> f(n + 1, INT_MAX);
-        vector<long long> prefix(n + 1);
-        idx[0] = 0;
-        for (int i = 1; i <= n; ++i) {
-            prefix[i] = prefix[i - 1] + arr[i - 1];
-            idx[prefix[i]] = i;
+        int res = INT_MAX / 2;
+        vector<int> pre(n + 1, INT_MAX / 2);
+        vector<int> s(n + 1);
+        for (int i = 0; i < n; i++) {
+            s[i + 1] = s[i] + arr[i];
         }
-        long long ans = n * 2;
-        for (int i = 1; i <= n; ++i) {
-            f[i] = min(f[i], f[i - 1]);
-            if (idx.count(prefix[i] - target) > 0) {
-                long long curLen = (long long)i - idx[prefix[i] - target];
-                f[i] = min(f[i], curLen);
-                ans = min(ans, curLen + f[idx[prefix[i] - target]]);
+
+        int l = 0;
+        for (int r = 0; r < n; r++) {
+            while (s[r + 1] - s[l] > target) {
+                l++;
+            }
+
+            if (s[r + 1] - s[l] == target) {
+                res = min(res, pre[l] + r - l + 1);
+                pre[r + 1] = min(pre[r], r - l + 1);
+            } else {
+                pre[r + 1] = pre[r];
             }
         }
-        if (ans == n * 2) return -1;
-        return ans;
+        return res == INT_MAX / 2 ? -1 : res;
     }
 };
 // @lc code=end

@@ -86,25 +86,31 @@ using namespace std;
 class Solution {
 public:
     long long continuousSubarrays(vector<int>& nums) {
+        deque<int> min_q, max_q;
         long long res = 0;
-        map<int, int> cnt;
-        int left = 0, right = 0;
-        while (right < nums.size()) {
-            int in_win = nums[right];
-            cnt[in_win]++;
-            right++;
-
-            while (cnt.rbegin()->first - cnt.begin()->first > 2)
-            {
-                int out_win = nums[left];
-                cnt[out_win]--;
-                if (cnt[out_win] == 0) {
-                    cnt.erase(out_win);
-                }
-                left++;
+        int left = 0;
+        for (int i = 0; i < nums.size(); i++) {
+            int x = nums[i];
+            while (!min_q.empty() && x <= nums[min_q.back()]) {
+                min_q.pop_back();
             }
-            res += right - left;
-            
+            min_q.push_back(i);
+
+            while (!max_q.empty() && x >= nums[max_q.back()]) {
+                max_q.pop_back();
+            }
+            max_q.push_back(i);
+
+            while (nums[max_q.front()] - nums[min_q.front()] > 2) {
+                left++;
+                if (min_q.front() < left) {
+                    min_q.pop_front();
+                }
+                if (max_q.front() < left) {
+                    max_q.pop_front();
+                }
+            }
+            res += (i - left + 1);
         }
         return res;
     }

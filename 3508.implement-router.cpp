@@ -142,32 +142,27 @@ public:
     }
     
     bool addPacket(int source, int destination, int timestamp) {
-        auto packet = tuple(source, destination, timestamp);
-        if (packet_set.count(packet)) {
+        auto aPacket = make_tuple(source, destination, timestamp);
+        if (!myPacketSet.insert(aPacket).second) { // packet 在 packet_set 中
             return false;
         }
-        packet_set.insert(packet);
-
-        if (packet_q.size() == myMemoryLimit) {
+        if (myPacketQueue.size() == myMemoryLimit) {
             forwardPacket();
         }
-
-        packet_q.push(packet);
-        dest_to_timestamps[destination].emplace_back(timestamp);
+        myPacketQueue.push(aPacket);
+        myDestToTimestamps[destination].push_back(timestamp);    
         return true;
     }
     
     vector<int> forwardPacket() {
-        if (packet_q.empty()) {
+        if (myPacketQueue.empty()) {
             return {};
         }
-
-        auto& packet = packet_q.front();
-        packet_q.pop();
-        packet_set.erase(packet);
-
-        auto [source, destination, timestamp] = packet;
-        dest_to_timestamps[destination].pop_front();
+        auto aPacket = myPacketQueue.front();
+        myPacketQueue.pop();
+        myPacketSet.erase(aPacket);
+        auto [source, destination, timestamp] = aPacket;
+        myDestToTimestamps[destination].pop_front();
         return {source, destination, timestamp};
     }
     
@@ -176,17 +171,17 @@ public:
      * （包括两端）内的数据包数量
      */
     int getCount(int destination, int startTime, int endTime) {
-        auto& timestamps = dest_to_timestamps[destination];
-        auto left = lower_bound(timestamps.begin(), timestamps.end(), startTime);
-        auto right = upper_bound(timestamps.begin(), timestamps.end(), endTime);
+        auto& aTimestamps = myDestToTimestamps[destination];
+        auto left = ranges::lower_bound(aTimestamps, startTime);
+        auto right = ranges::upper_bound(aTimestamps, endTime);
         return right - left;
     }
 
 private:
     int myMemoryLimit = 0;
-    queue<tuple<int, int, int>> packet_q;
-    set<tuple<int, int, int>> packet_set;
-    unordered_map<int, deque<int>> dest_to_timestamps;  // destination -> [timestamp]
+    queue<tuple<int, int, int>> myPacketQueue;
+    set<tuple<int, int, int>> myPacketSet;
+    unordered_map<int, deque<int>> myDestToTimestamps;
 };
 
 /**

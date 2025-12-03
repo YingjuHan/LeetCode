@@ -124,7 +124,18 @@ using namespace std;
 class Solution {
 public:
     long long minNumberOfSeconds(int mountainHeight, vector<int>& workerTimes) {
-        
+        priority_queue<tuple<long long, long long, int>, vector<tuple<long long, long long, int>>, greater<>> pq;
+        for (int t : workerTimes) {
+            pq.emplace(t, t, t);
+        }
+        long long res = 0;
+        while (mountainHeight--) {
+            // 工作后总用时，当前工作（山高度降低 1）用时，workerTimes[i]
+            auto [nxt, delta, base] = pq.top(); pq.pop();
+            res = nxt;
+            pq.emplace(nxt + delta + base, delta + base, base);
+        }
+        return res;
     }
 };
 // @lc code=end

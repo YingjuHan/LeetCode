@@ -69,5 +69,6 @@
         "limits": "cpp",
         "mutex": "cpp"
     },
-    "C_Cpp.default.cppStandard": "c++23"
+    "C_Cpp.default.cppStandard": "c++20",
+    "C_Cpp.doxygen.generatedStyle": "//!"
 }

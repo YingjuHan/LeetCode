@@ -79,6 +79,13 @@ using namespace std;
 #include <unordered_set>
 #include <utility>
 #include <vector>
+struct ListNode {
+    int val;
+    ListNode *next;
+    ListNode() : val(0), next(nullptr) {}
+    ListNode(int x) : val(x), next(nullptr) {}
+    ListNode(int x, ListNode *next) : val(x), next(next) {}
+};
 // @lcpr-template-end
 // @lc code=start
 /**

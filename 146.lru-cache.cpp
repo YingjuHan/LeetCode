@@ -88,44 +88,70 @@ using namespace std;
 #include <vector>
 // @lcpr-template-end
 // @lc code=start
+struct Node {
+    int key;
+    int value;
+    Node* prev;
+    Node* next;
+
+    Node(int k = 0, int v = 0) : key(k), value(v) {};
+};
+
 class LRUCache {
 public:
-    LRUCache(int capacity): myCapacity(capacity) {
-        
+    LRUCache(int capacity) : capacity(capacity), dummy(new Node()) {
+        dummy->prev = dummy;
+        dummy->next = dummy;
     }
     
     int get(int key) {
-        auto aUmapIter = myKeyToIter.find(key);
-        if (aUmapIter == myKeyToIter.end()) {
-            return -1;
-        }
-
-        auto aListIter = aUmapIter->second;
-        myCacheList.splice(myCacheList.begin(), myCacheList, aListIter);
-        return aListIter->second;
+        Node* node = get_node(key);
+        return node ? node->value : -1;
     }
     
     void put(int key, int value) {
-        auto aUmapIter = myKeyToIter.find(key);
-        if (aUmapIter != myKeyToIter.end()) {
-            auto aListIter = aUmapIter->second;
-            aListIter->second = value;
-            myCacheList.splice(myCacheList.begin(), myCacheList, aListIter);
+        Node* node = get_node(key);
+        if (node) {
+            node->value = value;
             return;
         }
-
-        myCacheList.emplace_front(key, value);
-        myKeyToIter[key] = myCacheList.begin();
-
-        if (myKeyToIter.size() > myCapacity) {
-            myKeyToIter.erase(myCacheList.back().first);
-            myCacheList.pop_back();
+        
+        keyToNode[key] = node = new Node(key, value);
+        push_front(node);
+        if (keyToNode.size() > capacity) {
+            Node* node = dummy->prev;
+            keyToNode.erase(node->key);
+            remove(node);
+            delete node;
         }
     }
 private:
-    int myCapacity;
-    list<pair<int, int>> myCacheList; // pair: <key, value>
-    unordered_map<int, list<pair<int, int>>::iterator> myKeyToIter; // key -> 链表节点迭代器
+    int capacity;
+    Node* dummy;
+    unordered_map<int, Node*> keyToNode;
+
+    void remove(Node *x) {
+        x->prev->next = x->next;
+        x->next->prev = x->prev;
+    }
+
+    void push_front(Node* x) {
+        x->prev = dummy;
+        x->next = dummy->next;
+        x->prev->next = x;
+        x->next->prev = x;
+    }
+
+    Node* get_node(int key) {
+        auto it = keyToNode.find(key);
+        if (it == keyToNode.end()) {
+            return nullptr;
+        }
+        Node* node = it->second;
+        remove(node);
+        push_front(node);
+        return node;
+    }
 };
 
 /**

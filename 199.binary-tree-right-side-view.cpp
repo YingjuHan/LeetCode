@@ -110,17 +110,40 @@ struct TreeNode {
  */
 class Solution {
 public:
+    // dfs
+    // vector<int> rightSideView(TreeNode* root) {
+    //     vector<int> res;
+    //     function<void(TreeNode*, int)> dfs = [&](TreeNode* node, int depth) {
+    //         if (node == nullptr) return;
+    //         if (depth == res.size()) {
+    //             res.push_back(node->val);
+    //         }
+    //         dfs(node->right, depth + 1);
+    //         dfs(node->left, depth + 1);
+    //     };
+    //     dfs(root, 0);
+    //     return res;
+    // }
+    // bfs
     vector<int> rightSideView(TreeNode* root) {
+        if (root == nullptr) return {};
+        queue<TreeNode*> q;
+        q.push(root);
         vector<int> res;
-        function<void(TreeNode*, int)> dfs = [&](TreeNode* node, int depth) {
-            if (node == nullptr) return;
-            if (depth == res.size()) {
-                res.push_back(node->val);
+        while (!q.empty()) {
+            res.push_back(q.front()->val);
+            int n = q.size();
+            for (int i = 0; i < n; i++) {
+                TreeNode* node = q.front();
+                q.pop();
+                if (node->right) {
+                    q.push(node->right);
+                }
+                if (node->left) {
+                    q.push(node->left);
+                }
             }
-            dfs(node->right, depth + 1);
-            dfs(node->left, depth + 1);
-        };
-        dfs(root, 0);
+        }
         return res;
     }
 };

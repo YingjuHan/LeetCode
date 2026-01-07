@@ -101,6 +101,8 @@ struct TreeNode {
  */
 class Solution {
 public:
+    // dfs
+    /*
     int myDepth = 0, myVal = 0;
     void dfs(TreeNode* node, int d) {
         if (node == nullptr) return;
@@ -120,6 +122,33 @@ public:
         myDepth = depth;
         myVal = val;
         dfs(root, 0);
+        return root;
+    }
+    */
+
+    // bfs
+    TreeNode* addOneRow(TreeNode* root, int val, int depth) {
+        if (depth == 1) {
+            return new TreeNode(val, root, nullptr);
+        }
+        queue<TreeNode*> q;
+        q.push(root);
+        for (int h = 1; !q.empty(); h++) {
+            if (h == depth - 1) {
+                while (!q.empty()) {
+                    TreeNode* cur = q.front();
+                    q.pop();
+                    cur->left = new TreeNode(val, cur->left, nullptr);
+                    cur->right = new TreeNode(val, nullptr, cur->right);
+                }
+            }
+            for (int i = q.size(); i > 0; i--) {
+                TreeNode* cur = q.front();
+                q.pop();
+                if (cur->left) q.push(cur->left);
+                if (cur->right) q.push(cur->right);
+            }
+        }
         return root;
     }
 };

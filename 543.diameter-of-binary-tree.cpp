@@ -91,10 +91,10 @@ public:
         int res = 0;
         function<int(TreeNode*)> dfs = [&](TreeNode* node) {
             if (node == nullptr) return -1;
-            int left_length = dfs(node->left);
-            int right_length = dfs(node->right);
-            res = max(res, left_length + right_length + 2);
-            return max(left_length, right_length) + 1;
+            int left_length = dfs(node->left) + 1;
+            int right_length = dfs(node->right) + 1;
+            res = max(res, left_length + right_length);
+            return max(left_length, right_length);
         };
         dfs(root);
         return res;

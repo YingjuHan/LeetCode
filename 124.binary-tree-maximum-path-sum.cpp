@@ -95,7 +95,7 @@ public:
             int l_val = dfs(node->left);
             int r_val = dfs(node->right);
             s = max(s, l_val + r_val + node->val);
-            return max(max(l_val, r_val) + node->val, 0);
+            return max(max(l_val, r_val) + node->val, 0); 
         };
         dfs(root);
         return s;

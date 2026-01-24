@@ -1,6 +1,6 @@
 {
   // 使用 clangd
-  "clangd.path": "/opt/homebrew/opt/llvm/bin/clangd",
+  "clangd.path": "/usr/bin/clangd",
   "clangd.arguments": [
     "--background-index",
     "--clang-tidy",
@@ -11,8 +11,8 @@
   "C_Cpp.intelliSenseEngine": "disabled",
 
   // 编译器默认指向 brew clang
-  "C_Cpp.default.compilerPath": "/opt/homebrew/opt/llvm/bin/clang++",
-  "C_Cpp.default.cppStandard": "c++23",
+  "C_Cpp.default.compilerPath": "/usr/bin/clang++",
+  "C_Cpp.default.cppStandard": "c++20",
   "C_Cpp.default.cStandard": "c23",
 
   // 编码与体验

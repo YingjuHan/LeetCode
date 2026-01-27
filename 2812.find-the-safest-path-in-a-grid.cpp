@@ -102,7 +102,7 @@ using namespace std;
 #include <vector>
 // @lcpr-template-end
 // @lc code=start
-class Solution {
+class Solution1 {
 public:
     static constexpr int DIRS[4][2] = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
 
@@ -166,6 +166,58 @@ public:
             }
         }
         return left;
+    }
+};
+
+class Solution {
+    static constexpr int dirs[4][2] = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+public:
+    int maximumSafenessFactor(vector<vector<int>> &grid) {
+        int n = grid.size();
+        vector<pair<int, int>> q;
+        vector<vector<int>> dis(n, vector<int>(n, -1));
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (grid[i][j] == 1) {
+                    q.push_back({i, j});
+                    dis[i][j] = 0;
+                }
+            }
+        }
+
+        vector<vector<pair<int, int>>> groups = {q};
+        while (!q.empty()) {
+            vector<pair<int, int>> nq;
+            for (auto& [i, j] : q) {
+                for (auto& [dx, dy] : dirs) {
+                    int nx = i + dx, ny = j + dy;
+                    if (0 <= nx && nx < n && 0 <= ny && ny < n && dis[nx][ny] < 0) {
+                        nq.push_back({nx, ny});
+                        dis[nx][ny] = groups.size();
+                    }
+                }
+            }
+            groups.push_back(nq);
+            q = std::move(nq);
+        }
+
+        // 并查集模板
+        vector<int> fa(n * n);
+        iota(fa.begin(), fa.end(), 0);
+        function<int(int)> find = [&](int x) -> int { return fa[x] == x ? x : fa[x] = find(fa[x]); };
+
+        for (int ans = (int) groups.size() - 2; ans > 0; ans--) {
+            for (auto &[i, j]: groups[ans]) {
+                for (auto& [dx, dy] : dirs) {
+                    int nx = i + dx, ny = j + dy;
+                    if (0 <= nx && nx < n && 0 <= ny && ny < n && dis[nx][ny] >= dis[i][j])
+                        fa[find(nx * n + ny)] = find(i * n + j);
+                }
+            }
+            if (find(0) == find(n * n - 1)) // 写这里判断更快些
+                return ans;
+        }
+        return 0;
     }
 };
 // @lc code=end

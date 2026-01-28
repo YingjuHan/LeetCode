@@ -81,7 +81,7 @@ using namespace std;
 #include <vector>
 // @lcpr-template-end
 // @lc code=start
-class Solution {
+class Solution1 {
     static constexpr int DIRS[4][2] = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
 public:
     int swimInWater(vector<vector<int>>& grid) {
@@ -117,6 +117,43 @@ public:
             }
         }
         return right;
+    }
+};
+
+class Solution {
+    static constexpr int DIRS[4][2] = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
+public:
+    int swimInWater(vector<vector<int>>& grid) {
+        int n = grid.size();
+        vector<vector<int>> dis(n, vector<int>(n, INT_MAX));
+        dis[0][0] = grid[0][0];
+
+        priority_queue<tuple<int, int, int>, vector<tuple<int, int, int>>, greater<>> q;
+        q.emplace(dis[0][0], 0, 0);
+
+        while (true) {
+            auto [d, x, y] = q.top();
+            q.pop();
+            if (x == n - 1 && y == n - 1) {
+                return d;
+            }
+            if (d > dis[x][y]) {
+                continue;
+            }
+
+            for (auto& [dx, dy] : DIRS) {
+                int nx = x + dx, ny = y + dy;
+                if (nx < 0 || nx >= n || ny < 0 || ny >= n) {
+                    continue;
+                }
+                int nd = max(d, grid[nx][ny]);
+                if (nd < dis[nx][ny]) {
+                    dis[nx][ny] = nd;
+                    q.emplace(nd, nx, ny);
+                }
+            }
+        }
+        return -1;
     }
 };
 // @lc code=end

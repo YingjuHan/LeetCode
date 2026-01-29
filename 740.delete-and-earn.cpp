@@ -1,0 +1,114 @@
+/*
+ * @lc app=leetcode.cn id=740 lang=cpp
+ * @lcpr version=30204
+ *
+ * [740] 删除并获得点数
+ *
+ * https://leetcode.cn/problems/delete-and-earn/description/
+ *
+ * algorithms
+ * Medium (60.09%)
+ * Likes:    1190
+ * Dislikes: 0
+ * Total Accepted:    185.2K
+ * Total Submissions: 308.2K
+ * Testcase Example:  '[3,4,2]'
+ *
+ * 给你一个整数数组 nums ，你可以对它进行一些操作。
+ * 
+ * 每次操作中，选择任意一个 nums[i] ，删除它并获得 nums[i] 的点数。之后，你必须删除 所有 等于 nums[i] - 1 和
+ * nums[i] + 1 的元素。
+ * 
+ * 开始你拥有 0 个点数。返回你能通过这些操作获得的最大点数。
+ * 
+ * 
+ * 
+ * 示例 1：
+ * 
+ * 输入：nums = [3,4,2]
+ * 输出：6
+ * 解释：
+ * 你可以执行下列步骤：
+ * - 删除 4 获得 4 个点数，因此 3 也被删除。nums = [2]。
+ * - 之后，删除 2 获得 2 个点数。nums = []。
+ * 总共获得 6 个点数。
+ * 
+ * 
+ * 示例 2：
+ * 
+ * 输入：nums = [2,2,3,3,3,4]
+ * 输出：9
+ * 解释：
+ * 你可以执行下列步骤：
+ * - 删除 3 获得 3 个点数。所有的 2 和 4 也被删除。nums = [3,3]。
+ * - 之后，再次删除 3 获得 3 个点数。nums = [3]。
+ * - 再次删除 3 获得 3 个点数。nums = []。
+ * 总共获得 9 个点数。
+ * 
+ * 
+ * 
+ * 
+ * 提示：
+ * 
+ * 
+ * 1 <= nums.length <= 2 * 10^4
+ * 1 <= nums[i] <= 10^4
+ * 
+ * 
+ */
+
+
+// @lcpr-template-start
+using namespace std;
+#include <algorithm>
+#include <array>
+#include <bitset>
+#include <climits>
+#include <deque>
+#include <functional>
+#include <iostream>
+#include <list>
+#include <queue>
+#include <stack>
+#include <tuple>
+#include <unordered_map>
+#include <unordered_set>
+#include <utility>
+#include <vector>
+// @lcpr-template-end
+// @lc code=start
+class Solution {
+public:
+    int rob(vector<int>& nums) {
+        int f0 = 0, f1 = 0;
+        for (int x : nums) {
+            int n_f = max(f1, f0 + x);
+            f0 = f1;
+            f1 = n_f;
+        }
+        return f1;
+    }
+    int deleteAndEarn(vector<int>& nums) {
+        int mx = *max_element(nums.begin(), nums.end());
+        vector<int> a(mx + 1);
+        for (int x : nums) {
+            a[x] += x;
+        }
+        return rob(a);
+    }
+};
+// @lc code=end
+
+
+
+/*
+// @lcpr case=start
+// [3,4,2]\n
+// @lcpr case=end
+
+// @lcpr case=start
+// [2,2,3,3,3,4]\n
+// @lcpr case=end
+
+ */
+

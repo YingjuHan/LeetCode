@@ -73,7 +73,8 @@ using namespace std;
 #include <vector>
 // @lcpr-template-end
 // @lc code=start
-class Solution {
+// 前缀和
+class Solution1 {
 public:
     int maxAbsoluteSum(vector<int>& nums) {
         int s = 0, mx = 0, mn = 0;
@@ -83,6 +84,20 @@ public:
             mn = min(mn, s);
         }
         return mx - mn;
+    }
+};
+
+// 动态规划
+class Solution {
+public:
+    int maxAbsoluteSum(vector<int>& nums) {
+        int ans = 0, f_mx = 0, f_mn = 0;
+        for (int x : nums) {
+            f_mx = max(f_mx, 0) + x;
+            f_mn = min(f_mn, 0) + x;
+            ans = max({ans, f_mx, -f_mn});
+        }
+        return ans;
     }
 };
 // @lc code=end

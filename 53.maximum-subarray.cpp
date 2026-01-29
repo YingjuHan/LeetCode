@@ -74,7 +74,8 @@ using namespace std;
 #include <vector>
 // @lcpr-template-end
 // @lc code=start
-class Solution {
+// 前缀和
+class Solution1 {
 public:
     int maxSubArray(vector<int>& nums) {
         int n = nums.size();
@@ -90,6 +91,20 @@ public:
             minPreSum = min(minPreSum, preSum[i]);
         }
         return res;
+    }
+};
+
+// 动态规划
+class Solution {
+public:
+    int maxSubArray(vector<int>& nums) {
+        int n = nums.size();
+        vector<int> f(n, 0);
+        f[0] = nums[0];
+        for (int i = 1; i < n; i++) {
+            f[i] = max(f[i - 1], 0) + nums[i];
+        }
+        return *max_element(f.begin(), f.end());
     }
 };
 // @lc code=end

@@ -79,7 +79,7 @@ using namespace std;
 #include <vector>
 // @lcpr-template-end
 // @lc code=start
-class Solution {
+class Solution1 {
 public:
     int maxMoves(vector<vector<int>>& grid) {
         int m = grid.size(), n = grid[0].size();
@@ -101,6 +101,33 @@ public:
             dfs(i, 0);
         }
         return ans;
+    }
+};
+
+class Solution {
+public:
+    int maxMoves(vector<vector<int>>& grid) {
+        int m = grid.size(), n = grid[0].size();
+        int ans = 0;
+        vector<vector<int>> dp(m, vector<int>(n, 0));
+        for (int j = n - 2; j >= 0; j--) {
+            for (int i = 0; i < m; i++) {
+                if (i > 0 && grid[i - 1][j + 1] > grid[i][j]) {
+                    dp[i][j] = max(dp[i][j], dp[i - 1][j + 1] + 1);
+                }
+                if (grid[i][j] < grid[i][j + 1]) {
+                    dp[i][j] = max(dp[i][j], dp[i][j + 1] + 1);
+                }
+                if (i < m - 1 && grid[i][j] < grid[i + 1][j + 1]) {
+                    dp[i][j] = max(dp[i][j], dp[i + 1][j + 1] + 1);
+                }
+                if (j == 0) {
+                    ans = max(ans, dp[i][j]);
+                }
+            }
+        }
+        return ans;
+
     }
 };
 // @lc code=end

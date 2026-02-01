@@ -115,7 +115,35 @@ using namespace std;
 class Solution {
 public:
     int maxCollectedFruits(vector<vector<int>>& fruits) {
-        
+        int n = fruits.size();
+        auto dp = [&]() -> int {
+            vector<vector<int>> f(n - 1, vector<int>(n + 1));
+            f[0][n - 1] = fruits[0][n - 1];
+            for (int i = 1; i < n - 1; i++) {
+                for (int j = max(n - 1 - i, i + 1); j < n; j++) {
+                    f[i][j] = max({f[i - 1][j - 1], f[i - 1][j], f[i - 1][j + 1]}) + fruits[i][j];
+                }
+            }
+            return f[n - 2][n - 1];
+        };
+
+        int ans = 0;
+        // 从 (0, 0) 出发的小朋友
+        for (int i = 0; i < n; i++) {
+            ans += fruits[i][i];
+        }
+
+        // 从 (0, n - 1) 出发的小朋友
+        ans += dp();
+
+        // 从 (n - 1, 0) 出发的小朋友（按照主对角线翻转）
+        // 把下三角形中的数据填到上三角形中
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < i; j++) {
+                fruits[j][i] = fruits[i][j];
+            }
+        }
+        return ans + dp();
     }
 };
 // @lc code=end

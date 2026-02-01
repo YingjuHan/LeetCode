@@ -72,7 +72,7 @@ using namespace std;
 #include <vector>
 // @lcpr-template-end
 // @lc code=start
-class Solution {
+class Solution1 {
 public:
     static constexpr int DIRS[4][2] = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
     int longestIncreasingPath(vector<vector<int>>& matrix) {
@@ -101,6 +101,46 @@ public:
             }
         }
         return ans;
+    }
+};
+
+class Solution {
+public:
+    int longestIncreasingPath(vector<vector<int>>& matrix) {
+        int m = matrix.size(), n = matrix[0].size();
+        vector<vector<int>> f(m, vector<int>(n, 1));
+        vector<array<int, 3>> vp;
+        vp.reserve(m * n);
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                vp.push_back({i, j, matrix[i][j]});
+            }
+        }
+        sort(vp.begin(), vp.end(), [](const array<int, 3>& a, const array<int, 3>& b) {
+            return a[2] < b[2];
+        });
+
+        int res = 1;
+        for (const auto& p : vp) {
+            int x = p[0], y = p[1], v = p[2];
+            if (x < 0 || y < 0 || x >= m - 1 || y >= n - 1) {
+                continue;
+            }
+            if (matrix[x - 1][y] < v && f[x - 1][y] + 1 > f[x][y]) {
+                f[x][y] = f[x - 1][y] + 1;
+            }
+            if (matrix[x + 1][y] < v && f[x + 1][y] + 1 > f[x][y]) {
+                f[x][y] = f[x + 1][y] + 1;
+            }
+            if (matrix[x][y - 1] < v && f[x][y - 1] + 1 > f[x][y]) {
+                f[x][y] = f[x][y - 1] + 1;
+            }
+            if (matrix[x][y + 1] < v && f[x][y + 1] + 1 > f[x][y]) {
+                f[x][y] = f[x][y + 1] + 1;
+            }
+            res = max(f[x][y], res);
+        }
+        return res;
     }
 };
 // @lc code=end

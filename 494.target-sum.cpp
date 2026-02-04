@@ -78,7 +78,7 @@ using namespace std;
 #include <numeric>
 // @lcpr-template-end
 // @lc code=start
-class Solution {
+class Solution1 {
 public:
     int findTargetSumWays(vector<int>& nums, int target) {
         int s = reduce(nums.begin(), nums.end()) - abs(target);
@@ -106,6 +106,31 @@ public:
         };
 
         return dfs(n - 1, m);
+    }
+};
+
+class Solution {
+public:
+    int findTargetSumWays(vector<int>& nums, int target) {
+        int s = reduce(nums.begin(), nums.end()) - abs(target);
+        if (s < 0 || s % 2) {
+            return 0;
+        }
+
+        int m = s / 2; // 背包容量
+        int n = nums.size();
+        vector<vector<int>> f(n + 1, vector<int>(m + 1, 0));
+        f[0][0] = 1;
+        for (int i = 0; i < n; i++) {
+            for (int c = 0; c <= m; c++) {
+                if (c < nums[i]) {
+                    f[i + 1][c] = f[i][c];
+                } else {
+                    f[i + 1][c] = f[i][c] + f[i][c - nums[i]];
+                }
+            }
+        }
+        return f[n][m];
     }
 };
 

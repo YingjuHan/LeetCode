@@ -86,11 +86,12 @@ public:
             }
             q.push_back(i);
 
-            if (i - q.front() >= k) {
+            int left = i - k + 1;
+            if (q.front() < left) {
                 q.pop_front();
             }
 
-            if (i + 1 >= k) {
+            if (left >= 0) {
                 res.push_back(nums[q.front()]);
             }
         }

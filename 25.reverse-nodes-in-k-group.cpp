@@ -94,30 +94,30 @@ struct ListNode {
 class Solution {
 public:
     ListNode* reverseKGroup(ListNode* head, int k) {
+        // 统计节点个数
         int n = 0;
         ListNode *cur = head;
-        while (cur)
-        {
+        while (cur) {
             n++;
             cur = cur->next;
         }
 
-        ListNode *dummy = new ListNode(0, head), *p0 = dummy;
-        while (n >= k) {
-            n -= k;
-            ListNode *pre = nullptr, *cur = p0->next;
+        ListNode *dummy = new ListNode(0, head), *p0 = dummy, *pre = nullptr;
+        cur = head;
+        
+        // k个一组处理
+        for (; n >= k; n -= k) {
             for (int i = 0; i < k; i++) {
-                (void) i;
                 ListNode* nxt = cur->next;
                 cur->next = pre;
                 pre = cur;
                 cur = nxt;
             }
 
-            ListNode* nxtKP0 = p0->next;
+            ListNode *nxt = p0->next;
             p0->next->next = cur;
             p0->next = pre;
-            p0 = nxtKP0;
+            p0 = nxt;
         }
         return dummy->next;
     }

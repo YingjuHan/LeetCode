@@ -82,22 +82,31 @@ using namespace std;
 class Solution {
 public:
     int pathSum(TreeNode* root, int targetSum) {
-        int res = 0;
-        unordered_map<long long, int> cnt;
-        cnt[0] = 1;
+        // key：从根到 node 的节点值之和
+        // value：节点值之和的出现次数
+        // 注意在递归过程中，哈希表只保存根到 node 的路径的前缀的节点值之和
+        unordered_map<long long, int> cnt = {{0, 1}};
+        int ans = 0;
+
+        // lambda 递归
+        // s 表示从根到 node 的父节点的节点值之和（node 的节点值尚未计入）
         auto dfs = [&](this auto&& dfs, TreeNode* node, long long s) {
             if (node == nullptr) {
                 return;
             }
+
             s += node->val;
-            res += cnt[s - targetSum];
+            // 把 node 当作路径的终点，统计有多少个起点
+            ans += cnt[s - targetSum]; // 注意这样写会把 s-targetSum 插入哈希表，介意的话可以特判
+
             cnt[s]++;
             dfs(node->left, s);
             dfs(node->right, s);
-            cnt[s]--;
+            cnt[s]--; // 恢复现场（撤销 cnt[s]++）
         };
+
         dfs(root, 0);
-        return res;
+        return ans;
     }
 };
 // @lc code=end

@@ -69,7 +69,7 @@ using namespace std;
 // @lc code=start
 class Solution {
 public:
-    int largestRectangleArea(vector<int>& heights) {
+    int largestRectangleArea1(vector<int>& heights) {
         heights.push_back(-1); // 最后大火收汁，用 -1 把栈清空
         stack<int> st;
         st.push(-1); // 在栈中只有一个数的时候，栈顶的「下面那个数」是 -1，对应 left[i] = -1 的情况
@@ -83,6 +83,62 @@ public:
                 ans = max(ans, heights[i] * (right - left - 1));
             }
             st.push(right);
+        }
+        return ans;
+    }
+
+    /**
+     * 1. 核心思路：找“左右边界”
+     * 要把某个柱子 heights[i] 作为矩形的高度，这个矩形能向左右延伸多远？
+     *   左边界： 左边第一个比它矮的柱子。
+     *   右边界： 右边第一个比它矮的柱子。
+     * 只要找到了这两个边界，矩形的宽度就是 right[i] - left[i] - 1，面积就是 heights[i] * 宽度
+     * 
+     * 2. 代码执行:
+     * 第一步: 计算左边界(left数组)
+     * 通过一次遍历, 维护一个高度递增的栈
+     *   如果当前柱子比栈顶矮, 说明栈顶不是左边界, 直接弹出
+     *   直到发现比当前矮的, 那个位置就是left[i]
+     *   如果栈为空, 说明左边没有比它矮的, 记为-1
+     * 
+     * 第二步: 计算右边界(right数组)
+     *  同理，从右往左遍历：
+     *  寻找右侧第一个比当前柱子矮的位置。
+     *  如果右边没有比它矮的，记为 n（数组长度）。
+     * 
+     * 第三步：计算最大面积
+     * 遍历每一个柱子，计算以它为高度的面积，取最大值：height[i] * (right[i] - left[i] - 1)
+     */
+    int largestRectangleArea(vector<int>& heights) {
+        int n = heights.size();
+        vector<int> left(n, -1);
+        stack<int> st;
+        for (int i = 0; i < n; i++) {
+            int h = heights[i];
+            while (!st.empty() && heights[st.top()] >= h) {
+                st.pop();
+            }
+            if (!st.empty()) {
+                left[i] = st.top();
+            }
+            st.push(i);
+        }
+
+        vector<int> right(n, n);
+        st = stack<int>();
+        for (int i = n - 1; i >= 0; i--) {
+            int h = heights[i];
+            while (!st.empty() && heights[st.top()] >= h) {
+                st.pop();
+            }
+            if (!st.empty()) {
+                right[i] = st.top();
+            }
+            st.push(i);
+        }
+        int ans = 0;
+        for (int i = 0; i < n; i++) {
+            ans = max(ans, heights[i] * (right[i] - left[i] - 1));
         }
         return ans;
     }

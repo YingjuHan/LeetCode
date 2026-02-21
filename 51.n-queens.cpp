@@ -73,30 +73,35 @@ using namespace std;
 // @lc code=start
 class Solution {
 public:
+    /**
+     * 用r表示行号,c表示列号
+     * 右上方向的坐标r+c是定值, 左上方向r-c是定值
+     */
     vector<vector<string>> solveNQueens(int n) {
-        vector<vector<string>> res;
-        vector<string> board(n, string(n, '.')); // 一开始棋盘是空的，没有皇后
+        vector<vector<string>> ans;
+        vector<string> board(n, string(n, '.')); // 一开始棋盘为空,没有Q
         vector<uint8_t> col(n), diag1(n * 2 - 1), diag2(n * 2 - 1);
 
         auto dfs = [&](this auto&& dfs, int r) {
             if (r == n) {
-                res.push_back(board);
+                ans.push_back(board);
                 return;
             }
 
+            // 在(r,c)放皇后
             for (int c = 0; c < n; c++) {
                 int rc = r - c + n - 1;
                 if (!col[c] && !diag1[r + c] && !diag2[rc]) {
                     board[r][c] = 'Q';
-                    col[c] = diag1[r + c] = diag2[rc] = true;
+                    col[c] = diag1[r + c] = diag2[rc] = 1;
                     dfs(r + 1);
-                    col[c] = diag1[r + c] = diag2[rc] = false;
+                    col[c] = diag1[r + c] = diag2[rc] = 0;
                     board[r][c] = '.';
                 }
             }
         };
         dfs(0);
-        return res;
+        return ans;
     }
 };
 // @lc code=end

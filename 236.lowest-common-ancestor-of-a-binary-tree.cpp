@@ -94,13 +94,17 @@ class Solution {
 public:
     TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
         if (root == nullptr || root == p || root == q) {
-            return root;
+            return root; // 找到 p 或 q 就不往下递归了，原因见上面答疑
         }
-        TreeNode* left = lowestCommonAncestor(root->left,  p, q);
+        TreeNode* left = lowestCommonAncestor(root->left, p, q);
         TreeNode* right = lowestCommonAncestor(root->right, p, q);
-        if (left && right) return root;
-        if (left) return left;
-        return right;
+        if (left && right) { // 左右都找到
+            return root; // 当前节点是最近公共祖先
+        }
+        // 如果只有左子树找到，就返回左子树的返回值
+        // 如果只有右子树找到，就返回右子树的返回值
+        // 如果左右子树都没有找到，就返回 nullptr（注意此时 right = nullptr）
+        return left ? left : right;
     }
 };
 // @lc code=end

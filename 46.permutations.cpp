@@ -70,55 +70,32 @@ using namespace std;
 // @lc code=start
 class Solution {
 public:
-    vector<vector<int>> permute1(vector<int>& nums) {
-        int n = nums.size();
-        vector<vector<int>> res;
-        vector<int> path(n);
-
-        unordered_set<int> s(nums.begin(), nums.end());
-
-        function<void(int, unordered_set<int>&)> dfs = [&](int i, unordered_set<int>& st) {
-            if (i == n) {
-                res.push_back(path);
-                return;
-            }
-
-            vector<int> cand(st.begin(), st.end()); // 先拷贝候选
-            for (int x : cand) {
-                path[i] = x;
-                st.erase(x);
-                dfs(i + 1, st);
-                st.insert(x);
-            }
-        };
-
-        dfs(0, s);
-        return res;
-    }
-
     vector<vector<int>> permute(vector<int>& nums) {
         int n = nums.size();
-        vector<vector<int>> res;
-        vector<int> path(n);
-        vector<bool> on_path(n, false);
+        vector<int> path(n); // 所有排列的长度都是一样的 n
+        vector<int8_t> on_path(n);
+        vector<vector<int>> ans;
 
-        function<void(int)> dfs = [&](int i) {
+        // 枚举 path[i] 填 nums 的哪个数
+        auto dfs = [&](this auto&& dfs, int i) -> void {
             if (i == n) {
-                res.push_back(path);
+                ans.emplace_back(path);
                 return;
             }
+
             for (int j = 0; j < n; j++) {
                 if (!on_path[j]) {
-                    path[i] = nums[j];
-                    on_path[j] = true;
+                    path[i] = nums[j]; // 从没有选的数字中选一个
+                    on_path[j] = true; // 已选上
                     dfs(i + 1);
-                    on_path[j] = false;
+                    on_path[j] = false; // 恢复现场
+                    // 注意 path 无需恢复现场，因为排列长度固定，直接覆盖就行
                 }
             }
         };
 
         dfs(0);
-        return res;
+        return ans;
     }
 };
 
